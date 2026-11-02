@@ -16,6 +16,28 @@ npm test
 
 Default `VITE_DEMO=true` is an in-memory fake API. It generates six uniquely named employees (three Freezer, three Ambient) and 140 days of sample assignments; real endpoints are only used with `VITE_DEMO=false`. A production setup must supply the site-local current date from the server; demo calendar uses client current date.
 
+## GitHub Pages demo
+
+In the repository's **Settings > Pages > Build and deployment**, set **Source** to
+**GitHub Actions**. Push `.github/workflows/pages.yml` to `main`, or run
+**Deploy planner to GitHub Pages** manually from the Actions tab after that file
+has been pushed. The workflow tests and builds the app, then publishes only `dist`.
+Do not select `Deploy from a branch` with the repository root: its `index.html`
+loads TypeScript source that must first be compiled by Vite.
+
+The workflow sets Vite's base path from the repository name, so assets load under
+`/wiops_shiftschedule/` rather than the domain root. Local development still uses
+`/`. To reproduce the Pages build locally:
+
+```bash
+npm run build -- --base /wiops_shiftschedule/
+npx vite preview
+```
+
+Open `http://localhost:4173/wiops_shiftschedule/` for that preview. Pages explicitly
+builds in demo mode: changes remain in memory and reset on reload. The middleware
+is not hosted by GitHub Pages.
+
 ## Components
 
 ```
