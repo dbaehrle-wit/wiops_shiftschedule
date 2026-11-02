@@ -1,0 +1,84 @@
+{
+  "changes": [
+    {
+      "eventId": "event-1043",
+      "previousCursor": "cursor-1042",
+      "cursor": "cursor-1043",
+      "transactionId": "tx-1043",
+      "requestId": "6e48757e-3624-4da6-9d90-6aeddf03c090",
+      "planVersion": "plan-43",
+      "referenceVersion": "refs-8",
+      "occurredAt": "2026-10-31T10:20:00Z",
+      "kind": "assignments.changed",
+      "assignments": [
+        {
+          "employeeId": 1001,
+          "date": "2026-11-02",
+          "shiftCode": "E",
+          "areaId": 1,
+          "version": "row-8",
+          "locked": false,
+          "lockReason": null,
+          "editable": true,
+          "source": "planner",
+          "updatedAt": "2026-10-31T10:20:00Z",
+          "shiftDefinitionVersion": "shift-E-v2",
+          "resolvedInterval": {
+            "startsAt": "2026-11-02T05:00:00Z",
+            "endsAt": "2026-11-02T13:00:00Z"
+          },
+          "compatibility": "unknown",
+          "skillChecks": [],
+          "absenceAreaId": null,
+          "absenceAreaSource": null
+        },
+        {
+          "employeeId": 1002,
+          "date": "2026-11-02",
+          "shiftCode": "S",
+          "areaId": null,
+          "version": "row-4",
+          "locked": false,
+          "lockReason": null,
+          "editable": true,
+          "source": "planner",
+          "updatedAt": "2026-10-31T10:20:00Z",
+          "shiftDefinitionVersion": "shift-S-v2",
+          "resolvedInterval": null,
+          "compatibility": "unknown",
+          "skillChecks": [],
+          "absenceAreaId": 1,
+          "absenceAreaSource": "prior-assignment"
+        },
+        {
+          "employeeId": 1003,
+          "date": "2026-11-02",
+          "shiftCode": "P",
+          "areaId": null,
+          "version": "row-1",
+          "locked": false,
+          "lockReason": null,
+          "editable": true,
+          "source": "planner",
+          "updatedAt": "2026-10-31T10:20:00Z",
+          "shiftDefinitionVersion": "shift-P-v2",
+          "resolvedInterval": null,
+          "compatibility": "unknown",
+          "skillChecks": [],
+          "absenceAreaId": null,
+          "absenceAreaSource": "unknown"
+        }
+      ],
+      "deleted": [
+        {
+          "employeeId": 1004,
+          "date": "2026-11-02",
+          "deletedVersion": "deleted-7"
+        }
+      ]
+    }
+  ],
+  "nextCursor": "cursor-1043",
+  "highWatermark": "cursor-1043",
+  "hasMore": false
+}

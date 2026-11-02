@@ -1,0 +1,280 @@
+{
+  "schemaVersion": "2.0",
+  "siteId": 1,
+  "range": {
+    "from": "2026-11-02",
+    "to": "2026-11-09"
+  },
+  "snapshotToken": "snapshot-example-1042",
+  "snapshotExpiresAt": "2026-10-31T10:05:00Z",
+  "planVersion": "plan-42",
+  "referenceVersion": "refs-8",
+  "changeCursor": "cursor-1042",
+  "serverTime": "2026-10-31T10:00:00Z",
+  "employees": [
+    {
+      "id": 1001,
+      "fullName": "Alex Morgan",
+      "departmentId": 1,
+      "role": "Operator",
+      "shiftGroupId": 1,
+      "radioNumber": "R-101",
+      "skills": [],
+      "version": "employee-1"
+    },
+    {
+      "id": 1002,
+      "fullName": "Sam Taylor",
+      "departmentId": 2,
+      "role": "Operator",
+      "shiftGroupId": 1,
+      "radioNumber": "R-102",
+      "skills": [],
+      "version": "employee-1"
+    },
+    {
+      "id": 1003,
+      "fullName": "Jamie Lee",
+      "departmentId": 3,
+      "role": "Operator",
+      "shiftGroupId": 1,
+      "radioNumber": "R-103",
+      "skills": [],
+      "version": "employee-1"
+    },
+    {
+      "id": 1004,
+      "fullName": "Chris Weber",
+      "departmentId": 4,
+      "role": "Operator",
+      "shiftGroupId": 1,
+      "radioNumber": "R-104",
+      "skills": [],
+      "version": "employee-1"
+    }
+  ],
+  "assignments": [
+    {
+      "employeeId": 1001,
+      "date": "2026-11-02",
+      "shiftCode": "L",
+      "areaId": 1,
+      "version": "row-7",
+      "locked": false,
+      "lockReason": null,
+      "editable": true,
+      "source": "planner",
+      "updatedAt": "2026-10-31T09:00:00Z",
+      "shiftDefinitionVersion": "shift-L-v2",
+      "resolvedInterval": {
+        "startsAt": "2026-11-02T13:00:00Z",
+        "endsAt": "2026-11-02T21:00:00Z"
+      },
+      "compatibility": "unknown",
+      "skillChecks": [],
+      "absenceAreaId": null,
+      "absenceAreaSource": null
+    },
+    {
+      "employeeId": 1002,
+      "date": "2026-11-02",
+      "shiftCode": "E",
+      "areaId": 1,
+      "version": "row-3",
+      "locked": false,
+      "lockReason": null,
+      "editable": true,
+      "source": "planner",
+      "updatedAt": "2026-10-31T09:00:00Z",
+      "shiftDefinitionVersion": "shift-E-v2",
+      "resolvedInterval": {
+        "startsAt": "2026-11-02T05:00:00Z",
+        "endsAt": "2026-11-02T13:00:00Z"
+      },
+      "compatibility": "unknown",
+      "skillChecks": [],
+      "absenceAreaId": null,
+      "absenceAreaSource": null
+    },
+    {
+      "employeeId": 1004,
+      "date": "2026-11-02",
+      "shiftCode": "N",
+      "areaId": 4,
+      "version": "row-6",
+      "locked": false,
+      "lockReason": null,
+      "editable": true,
+      "source": "planner",
+      "updatedAt": "2026-10-31T09:00:00Z",
+      "shiftDefinitionVersion": "shift-N-v2",
+      "resolvedInterval": {
+        "startsAt": "2026-11-02T21:00:00Z",
+        "endsAt": "2026-11-03T05:00:00Z"
+      },
+      "compatibility": "unknown",
+      "skillChecks": [],
+      "absenceAreaId": null,
+      "absenceAreaSource": null
+    }
+  ],
+  "carryInAssignments": [],
+  "nextEmployeeCursor": null,
+  "totalEmployees": 4,
+  "aggregates": {
+    "population": 4,
+    "dates": [
+      {
+        "date": "2026-11-02",
+        "absence": {
+          "off": 0,
+          "pto": 0,
+          "sick": 0,
+          "recorded": 3,
+          "unplanned": 1,
+          "unattributed": 0,
+          "rate": 0
+        }
+      },
+      {
+        "date": "2026-11-03",
+        "absence": {
+          "off": 0,
+          "pto": 0,
+          "sick": 0,
+          "recorded": 0,
+          "unplanned": 4,
+          "unattributed": 0,
+          "rate": null
+        }
+      },
+      {
+        "date": "2026-11-04",
+        "absence": {
+          "off": 0,
+          "pto": 0,
+          "sick": 0,
+          "recorded": 0,
+          "unplanned": 4,
+          "unattributed": 0,
+          "rate": null
+        }
+      },
+      {
+        "date": "2026-11-05",
+        "absence": {
+          "off": 0,
+          "pto": 0,
+          "sick": 0,
+          "recorded": 0,
+          "unplanned": 4,
+          "unattributed": 0,
+          "rate": null
+        }
+      },
+      {
+        "date": "2026-11-06",
+        "absence": {
+          "off": 0,
+          "pto": 0,
+          "sick": 0,
+          "recorded": 0,
+          "unplanned": 4,
+          "unattributed": 0,
+          "rate": null
+        }
+      },
+      {
+        "date": "2026-11-07",
+        "absence": {
+          "off": 0,
+          "pto": 0,
+          "sick": 0,
+          "recorded": 0,
+          "unplanned": 4,
+          "unattributed": 0,
+          "rate": null
+        }
+      },
+      {
+        "date": "2026-11-08",
+        "absence": {
+          "off": 0,
+          "pto": 0,
+          "sick": 0,
+          "recorded": 0,
+          "unplanned": 4,
+          "unattributed": 0,
+          "rate": null
+        }
+      }
+    ],
+    "areas": [
+      {
+        "areaId": 1,
+        "planned": 2,
+        "target": 14,
+        "shortage": 12,
+        "coveredDays": 1,
+        "absence": {
+          "off": 0,
+          "pto": 0,
+          "sick": 0,
+          "recorded": 2,
+          "unplanned": 0,
+          "unattributed": 0,
+          "rate": 0
+        }
+      },
+      {
+        "areaId": 2,
+        "planned": 0,
+        "target": 21,
+        "shortage": 21,
+        "coveredDays": 0,
+        "absence": {
+          "off": 0,
+          "pto": 0,
+          "sick": 0,
+          "recorded": 0,
+          "unplanned": 0,
+          "unattributed": 0,
+          "rate": null
+        }
+      },
+      {
+        "areaId": 3,
+        "planned": 0,
+        "target": 14,
+        "shortage": 14,
+        "coveredDays": 0,
+        "absence": {
+          "off": 0,
+          "pto": 0,
+          "sick": 0,
+          "recorded": 0,
+          "unplanned": 0,
+          "unattributed": 0,
+          "rate": null
+        }
+      },
+      {
+        "areaId": 4,
+        "planned": 1,
+        "target": 7,
+        "shortage": 6,
+        "coveredDays": 1,
+        "absence": {
+          "off": 0,
+          "pto": 0,
+          "sick": 0,
+          "recorded": 1,
+          "unplanned": 0,
+          "unattributed": 0,
+          "rate": 0
+        }
+      }
+    ],
+    "absencePopulation": 4
+  }
+}

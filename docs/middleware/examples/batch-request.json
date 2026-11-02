@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "2.0",
+  "requestId": "6e48757e-3624-4da6-9d90-6aeddf03c090",
+  "observedPlanVersion": "plan-42",
+  "referenceVersion": "refs-8",
+  "atomic": true,
+  "operations": [
+    {
+      "kind": "put",
+      "clientOperationId": "cell-1",
+      "employeeId": 1001,
+      "date": "2026-11-02",
+      "shiftCode": "E",
+      "areaId": 1,
+      "expectedVersion": "row-7"
+    },
+    {
+      "kind": "put",
+      "clientOperationId": "cell-2",
+      "employeeId": 1002,
+      "date": "2026-11-02",
+      "shiftCode": "S",
+      "areaId": null,
+      "expectedVersion": "row-3"
+    },
+    {
+      "kind": "put",
+      "clientOperationId": "cell-3",
+      "employeeId": 1003,
+      "date": "2026-11-02",
+      "shiftCode": "P",
+      "areaId": null,
+      "expectedVersion": null
+    },
+    {
+      "kind": "delete",
+      "clientOperationId": "cell-4",
+      "employeeId": 1004,
+      "date": "2026-11-02",
+      "expectedVersion": "row-6"
+    }
+  ]
+}

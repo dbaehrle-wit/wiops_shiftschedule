@@ -1,0 +1,43 @@
+{
+  "type": "urn:wiops:planner:version-conflict",
+  "title": "Assignment version conflict",
+  "status": 409,
+  "detail": "No operations were applied. One assignment changed since the draft was created.",
+  "instance": "/api/wiops/v2/sites/1/planner/assignments:batch",
+  "code": "VERSION_CONFLICT",
+  "traceId": "trace-example-409",
+  "requestId": "6e48757e-3624-4da6-9d90-6aeddf03c090",
+  "planVersion": "plan-44",
+  "conflicts": [
+    {
+      "clientOperationId": "cell-1",
+      "cell": {
+        "employeeId": 1001,
+        "date": "2026-11-02"
+      },
+      "expectedVersion": "row-7",
+      "actualVersion": "row-9",
+      "current": {
+        "employeeId": 1001,
+        "date": "2026-11-02",
+        "shiftCode": "L",
+        "areaId": 1,
+        "version": "row-9",
+        "locked": false,
+        "lockReason": null,
+        "editable": true,
+        "source": "planner",
+        "updatedAt": "2026-10-31T10:20:00Z",
+        "shiftDefinitionVersion": "shift-L-v2",
+        "resolvedInterval": {
+          "startsAt": "2026-11-02T13:00:00Z",
+          "endsAt": "2026-11-02T21:00:00Z"
+        },
+        "compatibility": "unknown",
+        "skillChecks": [],
+        "absenceAreaId": null,
+        "absenceAreaSource": null
+      }
+    }
+  ]
+}

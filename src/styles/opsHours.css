@@ -1,0 +1,6 @@
+.ops-lane { position: absolute; top: 0; display: block; outline: none; }
+.ops-lane:focus-visible { outline: 2px solid #2563eb; outline-offset: -2px; }
+.ops-hour { cursor: pointer; }
+.ops-hour:hover { filter: brightness(.94); }
+.ops-focus-column { stroke: transparent; }
+.ops-lane:focus-visible .ops-focus-column { stroke: #2563eb; stroke-width: 1.5; }

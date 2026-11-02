@@ -1,0 +1,230 @@
+{
+  "viewport": "1440x1000",
+  "mode": "Vite development",
+  "samples": [
+    {
+      "switching": {
+        "wall": 435,
+        "script": 195,
+        "layout": 5,
+        "style": 13,
+        "events": [
+          {
+            "name": "pointerdown",
+            "duration": 144,
+            "processing": 0.19999998807907104,
+            "presentation": 143.10000002384186
+          },
+          {
+            "name": "pointerup",
+            "duration": 144,
+            "processing": 0.10000002384185791,
+            "presentation": 140.30000001192093
+          },
+          {
+            "name": "click",
+            "duration": 144,
+            "processing": 88.89999997615814,
+            "presentation": 50.90000003576279
+          }
+        ],
+        "cells": 1350,
+        "nodes": 4290
+      },
+      "selection": {
+        "wall": 340,
+        "script": 133,
+        "layout": 3,
+        "style": 1,
+        "events": [
+          {
+            "name": "pointerdown",
+            "duration": 176,
+            "processing": 87.39999997615814,
+            "presentation": 86.10000002384186
+          },
+          {
+            "name": "pointerup",
+            "duration": 176,
+            "processing": 43.59999996423721,
+            "presentation": 38.10000002384186
+          },
+          {
+            "name": "click",
+            "duration": 176,
+            "processing": 0.10000002384185791,
+            "presentation": 36.89999997615814
+          }
+        ]
+      }
+    },
+    {
+      "switching": {
+        "wall": 481,
+        "script": 235,
+        "layout": 3,
+        "style": 12,
+        "events": [
+          {
+            "name": "pointerdown",
+            "duration": 216,
+            "processing": 0.20000004768371582,
+            "presentation": 215.39999997615814
+          },
+          {
+            "name": "pointerup",
+            "duration": 216,
+            "processing": 0.09999996423721313,
+            "presentation": 213.60000002384186
+          },
+          {
+            "name": "click",
+            "duration": 216,
+            "processing": 155,
+            "presentation": 57.80000001192093
+          }
+        ],
+        "cells": 1350,
+        "nodes": 6874
+      },
+      "selection": {
+        "wall": 259,
+        "script": 66,
+        "layout": 1,
+        "style": 1,
+        "events": [
+          {
+            "name": "pointerdown",
+            "duration": 96,
+            "processing": 32.80000001192093,
+            "presentation": 60.5
+          },
+          {
+            "name": "pointerup",
+            "duration": 96,
+            "processing": 32,
+            "presentation": 27.100000023841858
+          },
+          {
+            "name": "click",
+            "duration": 96,
+            "processing": 0.09999996423721313,
+            "presentation": 25.80000001192093
+          }
+        ]
+      }
+    },
+    {
+      "switching": {
+        "wall": 432,
+        "script": 200,
+        "layout": 2,
+        "style": 10,
+        "events": [
+          {
+            "name": "pointerdown",
+            "duration": 184,
+            "processing": 0.09999996423721313,
+            "presentation": 183.5
+          },
+          {
+            "name": "pointerup",
+            "duration": 184,
+            "processing": 0,
+            "presentation": 182
+          },
+          {
+            "name": "click",
+            "duration": 184,
+            "processing": 136,
+            "presentation": 45.40000003576279
+          }
+        ],
+        "cells": 1350,
+        "nodes": 9446
+      },
+      "selection": {
+        "wall": 256,
+        "script": 61,
+        "layout": 1,
+        "style": 1,
+        "events": [
+          {
+            "name": "pointerdown",
+            "duration": 96,
+            "processing": 30.69999998807907,
+            "presentation": 62.69999998807907
+          },
+          {
+            "name": "pointerup",
+            "duration": 96,
+            "processing": 29.399999976158142,
+            "presentation": 31.80000001192093
+          },
+          {
+            "name": "click",
+            "duration": 96,
+            "processing": 0,
+            "presentation": 30.69999998807907
+          }
+        ]
+      }
+    },
+    {
+      "switching": {
+        "wall": 453,
+        "script": 202,
+        "layout": 2,
+        "style": 10,
+        "events": [
+          {
+            "name": "pointerdown",
+            "duration": 184,
+            "processing": 0.19999998807907104,
+            "presentation": 183.4000000357628
+          },
+          {
+            "name": "pointerup",
+            "duration": 184,
+            "processing": 0,
+            "presentation": 182
+          },
+          {
+            "name": "click",
+            "duration": 184,
+            "processing": 137.60000002384186,
+            "presentation": 43.69999998807907
+          }
+        ],
+        "cells": 1350,
+        "nodes": 6154
+      },
+      "selection": {
+        "wall": 261,
+        "script": 59,
+        "layout": 1,
+        "style": 1,
+        "events": [
+          {
+            "name": "pointerdown",
+            "duration": 96,
+            "processing": 29.799999952316284,
+            "presentation": 63.90000003576279
+          },
+          {
+            "name": "pointerup",
+            "duration": 96,
+            "processing": 27.80000001192093,
+            "presentation": 34.80000001192093
+          },
+          {
+            "name": "click",
+            "duration": 96,
+            "processing": 0.10000002384185791,
+            "presentation": 33.69999998807907
+          }
+        ]
+      }
+    }
+  ]
+}
