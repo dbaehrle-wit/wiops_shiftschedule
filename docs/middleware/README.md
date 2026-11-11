@@ -2,6 +2,12 @@
 
 Status: proposal for frontend/backend discussion, 2026-10-31. This document and [contracts.ts](contracts.ts) describe a suggested **v2** interface. They are not connected to the running app. The existing demo/v1 endpoints remain as implemented in `src/api/plannerApi.ts`.
 
+Frontend skill model update (2026-11-11): the app now uses `Employee.areaSkills`, keyed
+by area ID, with `notQualified`, `qualified`, `intermediate`, `experienced`, or `expert`.
+Missing levels display as Not qualified. The credential/expiry and hard/soft skill
+fields in this older v2 draft and its examples are superseded for the frontend;
+that part of the proposed middleware contract still needs to be revised.
+
 ## Recommended design
 
 Use **REST for reads and atomic batch writes**, a **durable cursor-based change feed for synchronization**, and **SignalR notifications to wake up the pull client**. Add a 30-second polling fallback and a five-minute conditional consistency check. The database remains behind the middleware.

@@ -49,7 +49,7 @@ export function ShiftPlanner({siteId}:{siteId:number}){
  const headerActions=<PlannerHeaderActions dirty={ops.length} saving={saving} onSave={()=>void saveDraft()} onDiscard={()=>dispatch(draftActions.clearDraft())}/>;
  const scopeLabel=`${germanDate(scoped.dates[0])}${scoped.dates.length>1?` - ${germanDate(scoped.dates.at(-1)!)}`:''} / ${ui.departmentFilter==='all'?'All departments':ui.departmentFilter}${ui.view==='user'?' / Selected employee':''}${ui.view==='day'&&ui.dayShift!=='all'?` / ${SHIFT_LABELS[ui.dayShift]}`:''}`;
  return <Box sx={{height:'100%',minHeight:420,display:'flex',flexDirection:'column',bgcolor:'#f8fafc'}}>
-  <PlannerToolbar areas={data.areas} skills={data.skills} employees={scoped.snapshot.employees} onAutoPlan={()=>setAutoPlan(true)} saving={saving}/>
+  <PlannerToolbar areas={data.areas} employees={scoped.snapshot.employees} onAutoPlan={()=>setAutoPlan(true)} saving={saving}/>
   {draftError&&<Alert severity="error" onClose={()=>dispatch(draftActions.setDraftError(null))}>{draftError}</Alert>}
   <Box sx={{flex:1,minHeight:0,overflow:'auto',display:'flex',flexDirection:'column'}}>
    <Box sx={{p:1,display:'flex',flex:1,minHeight:340,minWidth:0}}>

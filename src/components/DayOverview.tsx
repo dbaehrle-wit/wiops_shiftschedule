@@ -10,7 +10,7 @@ import {draftActions} from '../features/draftSlice';
 import {uiActions} from '../features/uiSlice';
 import {assignmentKey,isWorkingShift,type Employee,type PlannerSnapshot} from '../model/types';
 import {dayAreaSummary} from '../model/dayStats';
-import {assignmentColor,SHIFT_LABELS} from '../model/shiftDisplay';
+import {assignmentTextColor,assignmentColor,SHIFT_LABELS} from '../model/shiftDisplay';
 import {germanDate,todayIso,weekdayLabel} from '../utils/date';
 import {createSkillAssessor,SKILL_STATUS_LABELS} from '../model/skills';
 import {PlannerDateField,PlannerSelect} from './PlannerControls';
@@ -21,7 +21,7 @@ export function DayOverview({snapshot,areaFilter=null,headerFilters,headerAction
  const date=useAppSelector(state=>state.ui.anchor);
  const [employeeStats,setEmployeeStats]=useState<Employee|null>(null),[editor,setEditor]=useState<Employee|null>(null);
  const shift=useAppSelector(state=>state.ui.dayShift),colorMode=useAppSelector(state=>state.ui.colorMode);
- const assessSkills=useMemo(()=>createSkillAssessor(snapshot.areas,snapshot.skills),[snapshot.areas,snapshot.skills,snapshot.employees]);
+ const assessSkills=useMemo(()=>createSkillAssessor(snapshot.areas),[snapshot.areas,snapshot.employees]);
  const {baseAssignments:assignments,assignmentFor:resolve,edits,saving}=usePlannerAssignments(snapshot.assignments);
  const assignmentFor=useCallback((employeeId:number)=>resolve(employeeId,date),[resolve,date]);
  const summary=useMemo(()=>dayAreaSummary({date,employees:snapshot.employees,areas:snapshot.areas,assignmentFor}),[date,snapshot.employees,snapshot.areas,assignmentFor]);
@@ -79,7 +79,7 @@ export function DayOverview({snapshot,areaFilter=null,headerFilters,headerAction
         {area.employees.map(employee=>{
          const assignment=assignmentFor(employee.id),dirty=Boolean(edits[assignmentKey(employee.id,date)]),assessment=assessSkills(employee,assignment?.areaId,date,assignment?.shiftCode);
          return <Box component="li" key={employee.id} sx={{p:1.25,borderBottom:'1px solid #edf0f4','&:last-child':{borderBottom:0}}}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1}><ButtonBase onClick={()=>setEmployeeStats(employee)} sx={{textAlign:'left',justifyContent:'flex-start',borderRadius:.5,'&:focus-visible':{outline:'2px solid #2563eb'}}}><Typography fontSize={13} fontWeight={600}>{employee.fullName}</Typography></ButtonBase><Chip size="small" label={assignment?.shiftCode??'Unplanned'} data-skill-status={assessment.status} title={`${assignment?SHIFT_LABELS[assignment.shiftCode]:'No shift assigned'} - ${assessment.summary}`} onClick={()=>setEditor(employee)} sx={{bgcolor:assignment?assignmentColor(assignment.shiftCode,assessment.status,colorMode):'#f1f5f9',flexShrink:0}}/></Stack>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1}><ButtonBase onClick={()=>setEmployeeStats(employee)} sx={{textAlign:'left',justifyContent:'flex-start',borderRadius:.5,'&:focus-visible':{outline:'2px solid #2563eb'}}}><Typography fontSize={13} fontWeight={600}>{employee.fullName}</Typography></ButtonBase><Chip size="small" label={assignment?.shiftCode??'Unplanned'} data-skill-status={assessment.status} title={`${assignment?SHIFT_LABELS[assignment.shiftCode]:'No shift assigned'} - ${assessment.summary}`} onClick={()=>setEditor(employee)} sx={{bgcolor:assignment?assignmentColor(assignment.shiftCode,assessment.status,colorMode):'#f1f5f9',color:assignmentTextColor(assignment?.shiftCode,assessment.status,colorMode),flexShrink:0}}/></Stack>
           <Typography variant="caption" color="text.secondary">{employee.role??'Operator'}{colorMode==='skill'&&isWorkingShift(assignment?.shiftCode)?` - ${SKILL_STATUS_LABELS[assessment.status]}`:''}{dirty?' - Unsaved':''}{assignment?.locked?' - Locked':''}</Typography>
           <Stack spacing={.25} sx={{mt:.5}}>
            {employee.mobileNumber&&<Typography variant="caption" color="text.secondary">Mobile: <Link href={`tel:${employee.mobileNumber.replace(/[^+\d]/g,'')}`} underline="hover" aria-label={`Call ${employee.fullName} on ${employee.mobileNumber}`}>{employee.mobileNumber}</Link></Typography>}
@@ -97,6 +97,6 @@ export function DayOverview({snapshot,areaFilter=null,headerFilters,headerAction
    <Typography variant="caption" color="text.secondary" sx={{display:'block',mt:2}}>Click a name for statistics or a shift badge to edit the day assignment. Contact numbers are demo data.</Typography>
   </Box>
   {employeeStats&&<EmployeeStatsDialog employee={employeeStats} onClose={()=>setEmployeeStats(null)}/>}
-  {editor&&<ShiftEditorDialog key={`${editor.id}|${date}`} employee={editor} date={date} assignment={assignmentFor(editor.id)} areas={snapshot.areas} skills={snapshot.skills} saving={saving} onClose={()=>setEditor(null)} onApply={(shiftCode,areaId)=>{if(saving||assignmentFor(editor.id)?.locked)return;const patch=buildAssignmentPatch(editor.id,date,{shiftCode,areaId},assignments.get(assignmentKey(editor.id,date)),assignmentFor(editor.id));if(patch)dispatch(draftActions.stageMany([patch]));setEditor(null);}}/>}
+  {editor&&<ShiftEditorDialog key={`${editor.id}|${date}`} employee={editor} date={date} assignment={assignmentFor(editor.id)} areas={snapshot.areas} saving={saving} onClose={()=>setEditor(null)} onApply={(shiftCode,areaId)=>{if(saving||assignmentFor(editor.id)?.locked)return;const patch=buildAssignmentPatch(editor.id,date,{shiftCode,areaId},assignments.get(assignmentKey(editor.id,date)),assignmentFor(editor.id));if(patch)dispatch(draftActions.stageMany([patch]));setEditor(null);}}/>}
  </Box>;
 }

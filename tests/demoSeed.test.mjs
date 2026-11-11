@@ -22,7 +22,8 @@ test('demo roster has six unique names across exactly Freezer and Ambient with t
  assert.deepEqual(snapshot.areas.map(area=>area.code),['COM','Depal','Receiving','Matrix']);assert.equal(snapshot.assignments.length,840);
  assert.equal(new Set(snapshot.assignments.map(assignment=>`${assignment.employeeId}|${assignment.date}`)).size,840);
  assert.deepEqual(snapshot.shiftTypes.filter(shift=>types.isWorkingShift(shift.code)).map(({code,startHour,endHour})=>({code,startHour,endHour})),[{code:'E',startHour:6,endHour:14},{code:'L',startHour:14,endHour:22},{code:'N',startHour:22,endHour:6}]);
- assert.ok(snapshot.areas.flatMap(area=>area.skillRequirements).every(requirement=>snapshot.skills.some(skill=>skill.id===requirement.skillId)));
+ assert.ok(snapshot.employees.every(employee=>snapshot.areas.every(area=>['notQualified','qualified','intermediate','experienced','expert'].includes(employee.areaSkills[area.id]))));
+ assert.equal(new Set(snapshot.employees.flatMap(employee=>Object.values(employee.areaSkills))).size,5);
 });
 test('both departments have continuous Sunday 14 to Friday 14 operations and weekday-only Receiving 06 to 22',()=>{
  const lanes=ops.buildOpsWeek('2026-10-26',snapshot.employees,snapshot.areas,new Map(),ops.defaultOpsConfig(snapshot.shiftTypes,snapshot.operatingProfiles));

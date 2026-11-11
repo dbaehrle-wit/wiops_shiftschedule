@@ -11,7 +11,7 @@ import {useAppDispatch,useAppSelector} from '../app/hooks';
 import {draftActions} from '../features/draftSlice';
 import {uiActions} from '../features/uiSlice';
 import {assignmentKey,isWorkingShift,isNonWorkingShift,type AssignmentPatch,type Employee,type PlannerSnapshot,type ShiftCode} from '../model/types';
-import {assignmentColor,SHIFT_CODES,SHIFT_COLORS,SHIFT_LABELS} from '../model/shiftDisplay';
+import {assignmentTextColor,assignmentColor,SHIFT_CODES,SHIFT_COLORS,SHIFT_LABELS} from '../model/shiftDisplay';
 import {calendarWeeks,datesForView,displayDate,germanDate,isoWeek,isWeekend,monthLabel,todayIso,weekdayLabel} from '../utils/date';
 import {posKey,rectangle,sameValue,type CellChange,type CellPos as Pos} from '../utils/gridDrag';
 import {useGridDrag,type GridMetrics} from './useGridDrag';
@@ -50,7 +50,7 @@ export function PlanningGrid({snapshot,headerFilters,headerActions,absence}:{sna
   return ()=>observer.disconnect();
  },[]);
  useEffect(()=>{setMenu(null);setEmployeeMenu(null);setEditor(null);setStatsDate(null);setFeedback(null);scrollRef.current?.scrollTo({left:0,top:0});},[ui.view,ui.anchor,ui.userId,ui.departmentFilter,ui.areaFilter,ui.employeeSort]);
- const assessSkills=useMemo(()=>createSkillAssessor(snapshot.areas,snapshot.skills),[snapshot.areas,snapshot.skills,snapshot.employees]);
+ const assessSkills=useMemo(()=>createSkillAssessor(snapshot.areas),[snapshot.areas,snapshot.employees]);
  const areasById=useMemo(()=>new Map(snapshot.areas.map(area=>[area.id,area])),[snapshot.areas]);
  const selected=useMemo(()=>new Set(ui.selection),[ui.selection]);
  const cellAt=useCallback((r:number,c:number):GridCell|undefined=>{
@@ -222,8 +222,8 @@ export function PlanningGrid({snapshot,headerFilters,headerActions,absence}:{sna
        title={`${employee.fullName} · ${dateLabel} · ${code?`${SHIFT_LABELS[code]} (${code})`:'Unplanned'} · ${area?.code??'No area'}${dirty?' · unsaved':''} · Double-click to edit${skillSummary?` - ${skillSummary}`:''}`}
        sx={{position:'absolute',top:calendar?3:minimal?3:4,left:col.start+(minimal?2:4),width:col.size-(minimal?4:8),height:ROW_H-(minimal?6:8),borderRadius:minimal?'3px':calendar?'10px':'8px',bgcolor:bg,backgroundImage:!code&&minimal?'repeating-linear-gradient(135deg,transparent,transparent 3px,#e2e8f0 3px,#e2e8f0 4px)':undefined,
         border:target?`2px dashed ${invalidDrop?'#dc2626':'#0891b2'}`:chosen?'2px solid #2563eb':'1px solid #dae2eb',boxShadow:chosen?'0 0 0 1px #2563eb':undefined,
-        opacity:source?0.4:outsideMonth?0.55:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:calendar?'flex-end':'center',pb:calendar?1:0,cursor:drag.preview?'inherit':saving?'wait':'cell',userSelect:'none',touchAction:'pan-x pan-y',fontWeight:650,fontSize:12,color:'#25415f','&:hover':{filter:drag.preview?undefined:'brightness(.97)'}}}>
-       {calendar&&<ButtonBase aria-label={`Day details for ${dateLabel}`} title="Double-click date: daily status by area" onDoubleClick={event=>{event.preventDefault();event.stopPropagation();setStatsDate(date);}} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();setStatsDate(date);}}} sx={{position:'absolute',top:5,left:7,px:.25,borderRadius:.5,fontSize:12,fontWeight:date===today?800:500,color:date===today?'primary.main':'text.secondary','&:hover':{bgcolor:'#ffffff90'}}}>{outsideMonth?dateLabel.slice(0,5):Number(date.slice(8))}{date===today?' · Today':''} <AbsenceRate metric={absence?.byDate[date]} date={date}/></ButtonBase>}
+        opacity:source?0.4:outsideMonth?0.55:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:calendar?'flex-end':'center',pb:calendar?1:0,cursor:drag.preview?'inherit':saving?'wait':'cell',userSelect:'none',touchAction:'pan-x pan-y',fontWeight:650,fontSize:12,color:assignmentTextColor(code,assessment.status,ui.colorMode),'&:hover':{filter:drag.preview?undefined:'brightness(.97)'}}}>
+       {calendar&&<ButtonBase aria-label={`Day details for ${dateLabel}`} title="Double-click date: daily status by area" onDoubleClick={event=>{event.preventDefault();event.stopPropagation();setStatsDate(date);}} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();setStatsDate(date);}}} sx={{position:'absolute',top:5,left:7,px:.25,bgcolor:ui.colorMode==='skill'&&assessment.status==='expert'?'#ffffffed':undefined,borderRadius:.5,fontSize:12,fontWeight:date===today?800:500,color:date===today?'primary.main':'text.secondary','&:hover':{bgcolor:'#ffffff90'}}}>{outsideMonth?dateLabel.slice(0,5):Number(date.slice(8))}{date===today?' · Today':''} <AbsenceRate metric={absence?.byDate[date]} date={date}/></ButtonBase>}
        {!minimal&&<Box component="span" sx={{pointerEvents:'none',fontSize:calendar?16:12}}>{code??'—'}</Box>}{!minimal&&isWorkingShift(code)&&<Typography component="span" noWrap data-cell-area sx={{fontSize:calendar?12:10,maxWidth:'100%',lineHeight:1.25,pointerEvents:'none'}}>{area?.code??(code?'No area':'')}</Typography>}
        {assignment?.locked&&<Box component="span" aria-hidden sx={{position:'absolute',top:1,left:minimal?0:4,fontSize:minimal?8:10}}>🔒</Box>}
        {chosen&&assignment&&!saving&&!drag.preview&&<Box component="button" type="button" tabIndex={-1} className="move-grip" aria-label={`Drag ${assignment.shiftCode} to move; Control or Command drag to copy`} title="Move selection - Ctrl/Cmd to copy" onPointerDown={event=>drag.start(event,pos,'move')} sx={{position:'absolute',left:0,bottom:calendar?7:3,width:minimal?11:18,height:minimal?17:22,p:0,border:0,bgcolor:'transparent',color:'#526b88',fontSize:minimal?12:17,lineHeight:1,cursor:'grab',touchAction:'none'}}>⠿</Box>}
@@ -246,6 +246,6 @@ export function PlanningGrid({snapshot,headerFilters,headerActions,absence}:{sna
   </Menu>
   {statsEmployee&&<EmployeeStatsDialog employee={statsEmployee} onClose={()=>setStatsEmployee(null)}/>}
   {statsDate&&<DayStatsDialog date={statsDate} employees={snapshot.employees} areas={snapshot.areas} assignmentFor={statsAssignment} onClose={()=>setStatsDate(null)}/>}
-  {editor&&<ShiftEditorDialog key={`${editor.employee.id}|${editor.date}`} employee={editor.employee} date={editor.date} assignment={resolveAssignment(editor)} areas={snapshot.areas} skills={snapshot.skills} saving={saving} onClose={()=>setEditor(null)} onApply={(code,areaId)=>{stageCells([editor],code,areaId);setEditor(null);}}/>}
+  {editor&&<ShiftEditorDialog key={`${editor.employee.id}|${editor.date}`} employee={editor.employee} date={editor.date} assignment={resolveAssignment(editor)} areas={snapshot.areas} saving={saving} onClose={()=>setEditor(null)} onApply={(code,areaId)=>{stageCells([editor],code,areaId);setEditor(null);}}/>}
  </Box>;
 }

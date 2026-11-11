@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import CloseRounded from "@mui/icons-material/CloseRounded";
 import AutoAwesomeOutlined from "@mui/icons-material/AutoAwesomeOutlined";
-import type { Area, Assignment, Employee, ShiftCode, SkillDefinition } from "../model/types";
+import type { Area, Assignment, Employee, ShiftCode } from "../model/types";
 import {assessAssignmentSkills} from '../model/skills';
 import {SkillCheckDetails} from './SkillUi';
 import { SHIFT_CODES, SHIFT_COLORS, SHIFT_LABELS } from "../model/shiftDisplay";
@@ -116,7 +116,6 @@ export function ShiftEditorDialog({
   date,
   assignment,
   areas,
-  skills,
   saving,
   onClose,
   onApply,
@@ -125,7 +124,6 @@ export function ShiftEditorDialog({
   date: string;
   assignment: Assignment | undefined;
   areas: Area[];
-  skills?: SkillDefinition[];
   saving: boolean;
   onClose: () => void;
   onApply: (code: ShiftCode, areaId: number | null) => void;
@@ -213,7 +211,7 @@ export function ShiftEditorDialog({
         >
           The work area applies to this day only. OFF, sick leave and PTO days have no area.
         </Typography>
-        <SkillCheckDetails assessment={assessAssignmentSkills(employee,areas.find(area=>area.id===areaId),date,code||undefined,skills)}/>
+        <SkillCheckDetails assessment={assessAssignmentSkills(employee,areas.find(area=>area.id===areaId),code||undefined)}/>
         <Box
           sx={{
             mt: 3,

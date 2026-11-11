@@ -10,67 +10,49 @@ async function loadTs(path,imports={}){
  const code=ts.transpileModule(await readFile(url,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
  runInThisContext(`(function(exports,require,module){${code}\n})`,{filename:fileURLToPath(url)})(module.exports,name=>imports[name]??require(name),module);return module.exports;
 }
-const dates=await loadTs('../src/utils/date.ts');
 const types=await loadTs('../src/model/types.ts');
-const {assessAssignmentSkills:assess,createSkillAssessor}=await loadTs('../src/model/skills.ts',{'../utils/date':dates,'./types':types});
+const {assessAssignmentSkills:assess,createSkillAssessor,employeeAreaSkill,AREA_SKILL_STATES}=await loadTs('../src/model/skills.ts',{'./types':types});
 const display=await loadTs('../src/model/shiftDisplay.ts',{'./types':types});
-const definitions=[{id:'safety',name:'Safety'},{id:'forklift',name:'Forklift'}];
-const area={id:1,code:'HBW',name:'HBW',skillRequirements:[{skillId:'safety',constraint:'hard'},{skillId:'forklift',constraint:'soft'}]};
-const employee={id:1,fullName:'A',department:'Fresh',skills:{safety:{status:'valid'},forklift:{status:'valid'}}};
-test('sick leave and PTO need no skills and retain their absence colors in skill mode',()=>{
- for(const code of ['S','P']){
-  const assessment=assess({...employee,skills:{}},area,'2026-10-31',code,definitions);
-  assert.equal(assessment.status,'off');assert.deepEqual(assessment.checks,[]);
-  assert.equal(display.assignmentColor(code,assessment.status,'skill'),display.SHIFT_COLORS[code]);
-  assert.equal(display.assignmentColor(code,assessment.status,'skill',true),display.COMPACT_COLORS[code]);
+const area={id:1,code:'COM',name:'COM'};
+const employee={id:1,fullName:'A',department:'Freezer',areaSkills:{1:'expert',2:'qualified'}};
+
+test('every proficiency state maps to its own color in both regular and compact skill views',()=>{
+ assert.deepEqual(AREA_SKILL_STATES,['notQualified','qualified','intermediate','experienced','expert']);
+ assert.equal(new Set(AREA_SKILL_STATES.map(state=>display.SKILL_COLORS[state])).size,5);
+ for(const state of AREA_SKILL_STATES){
+  const result=assess({...employee,areaSkills:{1:state}},area,'E');
+  assert.equal(result.status,state);assert.match(result.summary,/COM:/);
+  for(const compact of [false,true])assert.equal(display.assignmentColor('E',result.status,'skill',compact),display.SKILL_COLORS[state]);
  }
+ assert.equal(display.assignmentTextColor('E','expert','skill'),'#fff');
 });
-test('all views share color rules while OFF stays neutral and compact palettes remain distinct',()=>{
- assert.equal(display.assignmentColor('E','blocked','shift'),display.SHIFT_COLORS.E);
- assert.equal(display.assignmentColor('E','blocked','skill'),display.COMPAT_COLORS.blocked);
- assert.equal(display.assignmentColor('OFF','off','skill'),display.SHIFT_COLORS.OFF);
- assert.equal(display.assignmentColor('N','warning','skill',true),display.COMPACT_SKILL_COLORS.warning);
- assert.equal(display.assignmentColor('N','ok','shift',true),display.COMPACT_COLORS.N);
+
+test('levels are independent per area and missing or invalid levels are not qualified',()=>{
+ assert.equal(assess(employee,area,'E').status,'expert');
+ assert.equal(assess(employee,{...area,id:2},'N').status,'qualified');
+ for(const areaSkills of [undefined,{}, {1:'invalid'}])assert.equal(assess({...employee,areaSkills},area,'L').status,'notQualified');
+ assert.equal(employeeAreaSkill(employee,3),'notQualified');
+});
+
+test('absence colors and shift coloring stay independent of proficiency',()=>{
+ for(const code of ['OFF','S','P']){
+  const result=assess(employee,area,code);assert.equal(result.status,'off');
+  for(const compact of [false,true])assert.equal(display.assignmentColor(code,result.status,'skill',compact),(compact?display.COMPACT_COLORS:display.SHIFT_COLORS)[code]);
+  assert.notEqual(display.assignmentTextColor(code,'expert','skill'),'#fff');
+ }
+ for(const code of ['E','L','N'])assert.equal(display.assignmentColor(code,'expert','shift'),display.SHIFT_COLORS[code]);
+});
+
+test('unplanned cells and assignments without an area do not pretend to have an area level',()=>{
+ assert.equal(assess(employee,undefined,'E').status,'unknown');
+ assert.equal(assess(employee,area,undefined).status,'unknown');
  assert.equal(display.assignmentColor(undefined,'unknown','skill'),'#fff');
 });
-test('matching all area requirements is qualified while missing hard and soft requirements produce different severities',()=>{
- assert.equal(assess(employee,area,'2026-10-31','E',definitions).status,'ok');
- const missingHard={...employee,skills:{forklift:{status:'valid'}}};
- const hard=assess(missingHard,area,'2026-10-31','E',definitions);assert.equal(hard.status,'blocked');assert.match(hard.summary,/Safety: missing \(hard requirement\)/);
- const soft=assess({...employee,skills:{safety:{status:'valid'}}},area,'2026-10-31','L',definitions);assert.equal(soft.status,'warning');assert.match(soft.summary,/Forklift: missing \(soft requirement\)/);
-});
-test('credentials are checked against each assignment date with inclusive expiry and a 30-day warning window',()=>{
- const expiring={...employee,skills:{...employee.skills,safety:{status:'valid',validUntil:'2026-12-01'}}};
- assert.equal(assess(expiring,area,'2026-10-31','E',definitions).status,'ok');
- assert.equal(assess(expiring,area,'2026-11-01','E',definitions).status,'warning');
- assert.equal(assess(expiring,area,'2026-12-01','E',definitions).checks[0].status,'expiring');
- assert.equal(assess(expiring,area,'2026-12-02','E',definitions).status,'blocked');
-});
-test('an expired hard requirement wins over soft gaps and changing the assigned area changes the assessment',()=>{
- const person={...employee,skills:{safety:{status:'expired'},forklift:{status:'missing'}}};
- assert.equal(assess(person,area,'2026-10-31','N',definitions).status,'blocked');
- assert.equal(assess(person,{...area,skillRequirements:[{skillId:'forklift',constraint:'soft'}]},'2026-10-31','N',definitions).status,'warning');
-});
-test('missing skill data or area requirements is unchecked, and explicit no requirements is qualified',()=>{
- assert.equal(assess({...employee,skills:undefined},area,'2026-10-31','E',definitions).status,'unknown');
- assert.equal(assess(employee,{...area,skillRequirements:undefined},'2026-10-31','E',definitions).status,'unknown');
- assert.equal(assess(employee,area,'2026-10-31','E',undefined).status,'unknown');
- assert.equal(assess(employee,undefined,'2026-10-31','E',definitions).status,'unknown');
- assert.equal(assess(employee,{...area,skillRequirements:[]},'2026-10-31','E',definitions).status,'ok');
-});
-test('OFF is always neutral and unplanned cells do not pretend to have verified requirements',()=>{
- const missing={...employee,skills:{}};
- assert.equal(assess(missing,area,'2026-10-31','OFF',definitions).status,'off');
- assert.deepEqual(assess(missing,area,'2026-10-31',undefined,definitions).checks,[]);
- assert.equal(assess(missing,area,'2026-10-31',undefined,definitions).status,'unknown');
-});
-test('invalid expiry records stay unchecked rather than being treated as valid or normalized to another day',()=>{
- for(const validUntil of ['not-a-date','2026-02-30'])assert.equal(assess({...employee,skills:{...employee.skills,safety:{status:'valid',validUntil}}},area,'2026-10-31','E',definitions).status,'unknown');
-});
-test('cached assessments distinguish employee, area, date and shift, including proposed drag destinations',()=>{
- const check=createSkillAssessor([area,{...area,id:2,skillRequirements:[]}],definitions);
- const first=check(employee,1,'2026-10-31','E');assert.equal(check(employee,1,'2026-10-31','E'),first);
- assert.notEqual(check(employee,2,'2026-10-31','E'),first);
- assert.notEqual(check(employee,1,'2026-11-01','E'),first);
- assert.equal(check(employee,1,'2026-10-31','OFF').status,'off');
+
+test('assessment cache handles area edits, shift edits and refreshed employee data',()=>{
+ const check=createSkillAssessor([area,{...area,id:2}]);
+ const first=check(employee,1,'2026-11-11','E');assert.equal(check(employee,1,'2026-11-11','E'),first);
+ assert.equal(check(employee,2,'2026-11-11','E').status,'qualified');
+ assert.equal(check(employee,1,'2026-11-11','OFF').status,'off');
+ assert.equal(check({...employee,areaSkills:{1:'intermediate'}},1,'2026-11-11','E').status,'intermediate');
 });

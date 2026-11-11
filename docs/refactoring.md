@@ -12,7 +12,7 @@ The app has shared UI primitives and pure planning rules. Extend these entry poi
 | Resolve drafts against the server snapshot | `src/model/assignments.ts` |
 | Read memoized assignments from a view | `src/components/usePlannerAssignments.ts` |
 | Shift/skill palettes and color selection | `src/model/shiftDisplay.ts` |
-| Qualification checks and expiry rules | `src/model/skills.ts` |
+| Per-employee area skill levels and assessment | `src/model/skills.ts` |
 | Skill legends, reasons and requirements overview | `src/components/SkillUi.tsx` |
 | Date navigation, labels, weekend classification | `src/utils/date.ts` |
 | Scope filtering, rotation generation, coverage calculation | `src/model/planning.ts` |

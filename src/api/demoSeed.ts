@@ -1,6 +1,6 @@
 import {DEFAULT_SHIFT_HOURS} from '../model/opsHours';
 import {SHIFT_CODES,SHIFT_LABELS} from '../model/shiftDisplay';
-import type {Assignment,EmployeeSkill,OperatingProfile,PlannerSnapshot,ShiftCode} from '../model/types';
+import type {AreaSkillState,Assignment,OperatingProfile,PlannerSnapshot,ShiftCode} from '../model/types';
 import {addDays,startOfWeek,todayIso} from '../utils/date';
 
 const DEPARTMENTS=['Freezer','Ambient'];
@@ -28,25 +28,21 @@ function plannedShift(index:number,areaId:number,date:string,week:number):ShiftC
 
 /** Small deterministic demo roster, with assignments aligned to the operating calendar. */
 export function createDemoSnapshot(siteId:number,today=todayIso()):PlannerSnapshot {
- const skills=[{id:'safety',name:'Safety training'},{id:'com-training',name:'COM operation'},{id:'depal-training',name:'Depal operation'},{id:'receiving',name:'Receiving process'},{id:'matrix-training',name:'Matrix operation'}];
- const employeeSkills=(index:number):Record<string,EmployeeSkill>=>Object.fromEntries(skills.map((skill,skillIndex)=>{
-  const sample=(index+skillIndex*3)%11;
-  return [skill.id,sample===0?{status:'missing'}:sample===1?{status:'valid',validUntil:addDays(today,-10)}:sample===2?{status:'valid',validUntil:addDays(today,15)}:{status:'valid',validUntil:addDays(today,120+index)}];
- }));
- const employees=NAMES.map((fullName,index)=>({id:1001+index,fullName,department:DEPARTMENTS[index%2],role:index<2?'Shift lead':'Operator',shiftGroup:['Group A','Group B','Group C'][index%3],mobileNumber:`+44 7700 900${String(index).padStart(3,'0')}`,radioNumber:`R-${101+index}`,skills:employeeSkills(index)}));
+ const states:AreaSkillState[]=['notQualified','qualified','intermediate','experienced','expert'];
+ const employeeSkills=(index:number):Record<number,AreaSkillState>=>Object.fromEntries([1,2,3,4].map(areaId=>[areaId,states[(index+areaId-1)%states.length]]));
+ const employees=NAMES.map((fullName,index)=>({id:1001+index,fullName,department:DEPARTMENTS[index%2],role:index<2?'Shift lead':'Operator',shiftGroup:['Group A','Group B','Group C'][index%3],mobileNumber:`+44 7700 900${String(index).padStart(3,'0')}`,radioNumber:`R-${101+index}`,areaSkills:employeeSkills(index)}));
  const start=addDays(startOfWeek(today),-28),assignments:Assignment[]=[];
  for(const [index,employee] of employees.entries())for(let day=0;day<140;day++){
   const date=addDays(start,day),week=Math.floor(day/7),areaId=(index+week)%4+1,shiftCode=plannedShift(index,areaId,date,week);
   assignments.push({employeeId:employee.id,date,shiftCode,areaId:shiftCode==='OFF'?null:areaId,compatibility:'unknown',version:1});
  }
- const requirement=(skillId:string,constraint:'hard'|'soft')=>({skillId,constraint});
  return {
-  siteId,siteTimeZone:'Europe/Berlin',planVersion:1,operatingProfilesVersion:'two-departments-v1',employees,skills,operatingProfiles:operatingProfiles(),
+  siteId,siteTimeZone:'Europe/Berlin',planVersion:1,operatingProfilesVersion:'two-departments-v1',employees,operatingProfiles:operatingProfiles(),
   areas:[
-   {id:1,code:'COM',name:'COM',defaultRequired:2,skillRequirements:[requirement('safety','hard'),requirement('com-training','soft')]},
-   {id:2,code:'Depal',name:'Depal',defaultRequired:3,skillRequirements:[requirement('safety','hard'),requirement('depal-training','hard')]},
-   {id:3,code:'Receiving',name:'Receiving',defaultRequired:2,skillRequirements:[requirement('safety','hard'),requirement('receiving','soft')]},
-   {id:4,code:'Matrix',name:'Matrix',defaultRequired:1,skillRequirements:[requirement('safety','hard'),requirement('matrix-training','hard')]}
+   {id:1,code:'COM',name:'COM',defaultRequired:2},
+   {id:2,code:'Depal',name:'Depal',defaultRequired:3},
+   {id:3,code:'Receiving',name:'Receiving',defaultRequired:2},
+   {id:4,code:'Matrix',name:'Matrix',defaultRequired:1}
   ],
   shiftTypes:SHIFT_CODES.map(code=>({code,label:SHIFT_LABELS[code],...(code==='E'||code==='L'||code==='N'?DEFAULT_SHIFT_HOURS[code]:{})})),assignments
  };
