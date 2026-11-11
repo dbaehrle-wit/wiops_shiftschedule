@@ -6,7 +6,7 @@ export type Compatibility = 'ok' | 'warning' | 'blocked' | 'unknown';
 export type PlannerView = 'day' | 'week' | 'fourWeeks' | 'month' | 'user' | 'minimal' | 'areas' | 'opsHours';
 export type AreaSkillLevel = 'qualified' | 'intermediate' | 'experienced' | 'expert';
 export type AreaSkillState = 'notQualified' | AreaSkillLevel;
-export interface Employee { id: number; fullName: string; role?: string; department: string; shiftGroup?: string; mobileNumber?: string; radioNumber?: string; defaultShift?: ShiftCode; areaSkills?:Partial<Record<number,AreaSkillState>>; }
+export interface Employee { temporary?:boolean; id: number; fullName: string; role?: string; department: string; shiftGroup?: string; mobileNumber?: string; radioNumber?: string; defaultShift?: ShiftCode; areaSkills?:Partial<Record<number,AreaSkillState>>; }
 export interface Area { id: number; code: string; name: string; defaultRequired?:number; }
 export interface ShiftType { code: ShiftCode; label: string; startHour?:number; endHour?:number; }
 export interface OperatingWindow {days:number[];startHour:number;endHour:number;target:number}
